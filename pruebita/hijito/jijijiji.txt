@@ -1,0 +1,7 @@
+  
+  future
+  if (option.validate){
+    resolve([{href: 1, text: 2,  file:'xyz', status: 200, ok: 'ok'},{href: 1, text: 2,  file:'xyz', status: 200, ok: 'ok'}]);
+  } else {
+    resolve([{href: 1, text: 2, file:'xyz'}, {href: 1, text: 2, file:'xyz'}]);
+  }
