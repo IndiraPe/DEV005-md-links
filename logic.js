@@ -18,7 +18,7 @@ const arrayMD = []
 const lookForMD = (validPath) => {
     if (fs.lstatSync(validPath).isDirectory() === true){
         const data = fs.readdirSync(validPath)
-        const childrenPath = data.map(elem => validPath+`\\${elem}`)
+        const childrenPath = data.map(elem => path.join(validPath, elem)/* validPath+`\\${elem}` */)
         childrenPath.forEach(elm => lookForMD(elm))
     } else {
         path.extname(validPath) === '.md' && arrayMD.push(validPath);
@@ -30,22 +30,24 @@ const readMD = (mdPath) => new Promise((resolve, reject) =>  {
     fs.readFile(mdPath, 'utf8', (error, data) => {
         if(error){
             reject('Se encontró un error al leer el archivo')
-        }
-        const er = new RegExp(/\[.*\]\(https?:\/{2}[\w\-.]+\/?.*\)/g)
-        const mdContainMatch = data.match(er)
-        if(mdContainMatch === null){
-            resolve([])
         }else{
-            const mdContainSlice = mdContainMatch.map(elem => {
-                const parenthesisLeft = elem.indexOf('(')
-                const parenthesisRight = elem.indexOf(')')
-                const link = elem.slice(parenthesisLeft+1, parenthesisRight)
-                const bracketLeft = elem.indexOf('[')
-                const bracketRight = elem.indexOf(']')
-                const text = elem.slice(bracketLeft+1, bracketRight)
-                return { href: link, text: text, file: mdPath }
-            })
-            resolve(mdContainSlice)
+            const er = new RegExp(/\[.*\]\(https?:\/{2}[\w\-.]+\/?.*\)/g)
+            const mdContainMatch = data.match(er)
+            if(mdContainMatch === null){
+                resolve([])
+            }else{
+                const mdContainSlice = mdContainMatch.map(elem => {
+                    const parenthesisLeft = elem.indexOf('(')
+                    const parenthesisRight = elem.indexOf(')')
+                    const link = elem.slice(parenthesisLeft+1, parenthesisRight)
+                    const bracketLeft = elem.indexOf('[')
+                    const bracketRight = elem.indexOf(']')
+                    let text = elem.slice(bracketLeft+1, bracketRight)
+                    text.length>50 ? text=text.slice(0, 50) : text;
+                    return { href: link, text: text, file: mdPath }
+                })
+                resolve(mdContainSlice)
+            }
         }
     });
 })
@@ -66,7 +68,7 @@ const validLink = (Objectlink) => {
                     href:Objectlink.href, 
                     text:Objectlink.text, 
                     file:Objectlink.file, 
-                    ok:'ok', 
+                    statusText:'ok', 
                     status: status 
                 }
             }else{
@@ -74,7 +76,7 @@ const validLink = (Objectlink) => {
                     href:Objectlink.href, 
                     text:Objectlink.text, 
                     file:Objectlink.file, 
-                    ok:'fail', 
+                    statusText:'fail', 
                     status: status 
                 }
             }
@@ -86,7 +88,7 @@ const validLink = (Objectlink) => {
                     href:Objectlink.href, 
                     text:Objectlink.text, 
                     file:Objectlink.file, 
-                    ok:'fail', 
+                    statusText:'fail', 
                     status: statusError
                 }
             }
@@ -113,9 +115,10 @@ const statsValidateLinks = (allObjects) => {
     const listUrl = allObjects.map(elem => elem.href)
     const set = new Set(listUrl)
     const unique = set.size
-    const broken = allObjects.filter(obj => obj.ok === 'fail').length
+    const broken = allObjects.filter(obj => obj.statusText === 'fail').length
     return { Total:total, Unique:unique, Broken:broken }
 }
 
 module.exports = { validatePath, lookForMD, readAllMD, validAllLinks, readMD, statsLinks, statsValidateLinks };
 
+// COMO TESTEAR una peticion axios con jest

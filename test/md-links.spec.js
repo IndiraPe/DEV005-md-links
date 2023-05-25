@@ -1,7 +1,34 @@
 const mdLinks = require('../index');
-const { validatePath, lookForMD, readMD } = require('../logic')
+const { validatePath, lookForMD, readMD, readAllMD, statsLinks, statsValidateLinks } = require('../logic')
+//variables de prueba
 const url = 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba'
 const mdEmpty = 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\empty.md'
+const arrMD = [
+  'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md',
+  'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\hijo\\ya.md'
+]
+const objPrueba = [
+{
+  href: 'https://nodejs.org/es/',
+  text: 'Node.js',
+  file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md',
+  statusText: 'ok',
+  status: 200
+},
+{
+  href: 'https://nodejs.org/es/',
+  text: 'Node.js',
+  file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\otro.md',
+  statusText: 'ok',
+  status: 200
+},
+{
+  href: 'https://developers.google.com/v8/sdfsfdsfs',
+  text: 'motor de JavaScript (404)',
+  file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md',
+  statusText: 'fail',
+  status: 404
+}]
 
 describe('mdLinks', () => {
   it('debería ser una funcion', () => {
@@ -32,35 +59,77 @@ describe('lookForMD', () => {
       ]) 
   })
 }) 
-//Test en mantenimiento :( ↓
+
 describe('readMD', () => {
   it('debería retornar un mensaje si hay un error al leer el archivo .md en la promesa', () => {
-    expect.assertions(1);
-    return readMD(`${url}\\siiii.md`).catch(error => {
+    return readMD(`${url}\\siiiii.md`)
+    .then(() => {
+      throw new Error('la promesa se debió rechazar porque no existía')
+    })
+    .catch(error => {
       expect(error).toBe('Se encontró un error al leer el archivo')
     })
   })
-  // it('debería retornar un [] si .md no tiene links ', (done) => {
-      
-  //     expect(readMD(mdEmpty)).resolves.toStrictEqual([])
-  //   done()
-  // })
-  // it('debería extraer los links del archivo .md', (done) => {
-  //   readMD('C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md')
-  //   .then(resp => {
-  //     expect(resp).toBe([
-  //       {
-  //         href: 'https://nodejs.org/es/',
-  //         text: 'Node.js',
-  //         file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\pruebita\\si.md'
-  //       },
-  //       {
-  //         href: 'https://developers.google.com/v8/',
-  //         text: 'motor de JavaScript V8 de Chrome',
-  //         file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\pruebita\\si.md'
-  //       }
-  //     ])
-  //   })
-  //   done()
-  // })
+  it('debería retornar un [] si .md no tiene links ', (done) => {
+      expect(readMD(mdEmpty)).resolves.toEqual([])
+    done()
+  })
+  it('debería extraer los links del archivo .md', (done) => {
+      expect(readMD(`${url}\\si.md`)).resolves.toStrictEqual([
+        {
+          href: 'https://nodejs.org/es/',
+          text: 'Node.js',
+          file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md'
+        },
+        {
+          href: 'https://developers.google.com/v8/',
+          text: 'motor de JavaScript V8 de Chrome',
+          file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md'
+        }
+      ])
+    done()
+  })
+})
+
+describe('readAllMD', () => {
+  it('debería retornar un array de objetos', (done) => {
+    readAllMD(arrMD)
+    .then(resp => {
+      expect(resp).toStrictEqual([
+        [{
+          href: 'https://nodejs.org/es/',
+          text: 'Node.js',
+          file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md'
+        },
+        {
+          href: 'https://developers.google.com/v8/',
+          text: 'motor de JavaScript V8 de Chrome',
+          file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md'
+        }],
+        [{
+          href: 'https://nodejs.org/es/',
+          text: 'Node.js',
+          file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\hijo\\ya.md'
+        },
+        {
+          href: 'https://developers.google.com/v8/',
+          text: 'motor de JavaScript V8 de Chrome',
+          file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\hijo\\ya.md'
+        }]
+      ])
+    })
+    done()
+  })
+})
+
+describe('statsLinks', () => {
+  it('Debería retornar un objeto con Total e Unique', () => {
+    expect(statsLinks(objPrueba)).toStrictEqual({ Total: 3, Unique: 2})
+  })
+})
+
+describe('statsValidateLinks', () => {
+  it('Debería retornar un objeto con Total, Unique y Broken', () => {
+    expect(statsValidateLinks(objPrueba)).toStrictEqual({ Total: 3, Unique: 2, Broken: 1 })
+  })
 })
