@@ -8,12 +8,13 @@ const mdLinks = (path, option) => new Promise((resolve, reject) => {
   const filesMD = lookForMD(resultPath)
   readAllMD(filesMD)
     .then((res) => {
-      validAllLinks(res.flat())
+      const resFlat = res.flat()
+      validAllLinks(resFlat)
         .then(resp => {
           if (option.validate) {
             resolve(resp);
           } else {
-            resolve(res.flat())
+            resolve(resFlat)
           }
         })
         .catch(err => {

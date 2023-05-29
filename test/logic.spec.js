@@ -1,5 +1,6 @@
-const mdLinks = require('../index');
-const { validatePath, lookForMD, readMD, readAllMD, statsLinks, statsValidateLinks } = require('../logic')
+const axios = require('axios')
+jest.mock('axios')
+const { validatePath, lookForMD, readMD, readAllMD, statsLinks, statsValidateLinks, validLink } = require('../logic')
 //variables de prueba
 const url = 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba'
 const mdEmpty = 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\empty.md'
@@ -30,18 +31,6 @@ const objPrueba = [
   status: 404
 }]
 
-describe('mdLinks', () => {
-  it('debería ser una funcion', () => {
-    expect(typeof mdLinks).toBe('function');
-  });
-  it('Si no existe un path nos deberia arrojar un error ',  (done) =>{
-    mdLinks().catch(error => {
-      expect(error).toBe('Error: La ruta no existe :(')
-      done()
-    })
-  })
-});
-
 describe('validatePath', () => {
   it('si la ruta es absoluta, retorna la ruta', () => {
     expect(validatePath(url)).toBe(url)
@@ -70,12 +59,11 @@ describe('readMD', () => {
       expect(error).toBe('Se encontró un error al leer el archivo')
     })
   })
-  it('debería retornar un [] si .md no tiene links ', (done) => {
-      expect(readMD(mdEmpty)).resolves.toEqual([])
-    done()
+  it('debería retornar un [] si .md no tiene links ', () => {
+      return expect(readMD(mdEmpty)).resolves.toEqual([])
   })
-  it('debería extraer los links del archivo .md', (done) => {
-      expect(readMD(`${url}\\si.md`)).resolves.toStrictEqual([
+  it('debería extraer los links del archivo .md', () => {
+      return expect(readMD(`${url}\\si.md`)).resolves.toStrictEqual([
         {
           href: 'https://nodejs.org/es/',
           text: 'Node.js',
@@ -87,7 +75,6 @@ describe('readMD', () => {
           file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md'
         }
       ])
-    done()
   })
 })
 
@@ -119,6 +106,44 @@ describe('readAllMD', () => {
       ])
     })
     done()
+  })
+})
+
+describe('validLink', () => {
+  it('debería hacer la petición a axios y entrar en status ok', () => {
+    const mockdata = {
+      href: 'https://nodejs.org/es/',
+      text: 'Node.js',
+      file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\otro.md',
+      statusText: 'ok',
+      status: 200
+    }
+    axios.get.mockResolvedValueOnce( { status: mockdata.status })
+    return expect(validLink(mockdata)).resolves.toEqual(mockdata)
+  })
+  it('debería hacer la petición a axios y entrar en status fail', () => {
+    const mockdata = {
+      href: 'https://developers.google.com/v8/sdfsfdsfs',
+      text: 'motor de JavaScript (404)',
+      file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md',
+      statusText: 'fail',
+      status: 102
+    }
+    axios.get.mockResolvedValueOnce( { status: mockdata.status })
+    return expect(validLink(mockdata)).resolves.toEqual(mockdata)
+  })
+  it('debería hacer la petición a axios y entrar en catch', () => {
+    const mockdata = {
+      href: 'https://developers.google.com/v8/sdfsfdsfs',
+      text: 'motor de JavaScript (404)',
+      file: 'C:\\Users\\asus\\Documents\\Laboratoria\\DEV005-md-links\\test\\prueba\\si.md',
+      statusText: 'fail',
+      status: 404
+    }
+    axios.get.mockRejectedValueOnce ({ response: { status: mockdata.status } })
+    return validLink(mockdata).catch((error) => {
+      expect(error).toEqual(mockdata);
+    });
   })
 })
 

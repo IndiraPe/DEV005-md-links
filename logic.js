@@ -13,18 +13,37 @@ const validatePath = (userPath) => {
         return path.resolve(userPath)
     }
 }
-// Filtrar si es archivo .md
-const arrayMD = []
+
+// Elm viene de Haskell
+// Filtrar si es archivo .md - Código funcional
 const lookForMD = (validPath) => {
-    if (fs.lstatSync(validPath).isDirectory() === true){
-        const data = fs.readdirSync(validPath)
-        const childrenPath = data.map(elem => path.join(validPath, elem)/* validPath+`\\${elem}` */)
-        childrenPath.forEach(elm => lookForMD(elm))
+    const isDirectory = fs.lstatSync(validPath).isDirectory();
+    let result;
+    if (isDirectory){
+        result = fs.readdirSync(validPath)
+            .map(elem => lookForMD(path.join(validPath, elem)))
+            .flat();
     } else {
-        path.extname(validPath) === '.md' && arrayMD.push(validPath);
+        result = path.extname(validPath) === '.md' ? [validPath] : []
     }
-    return arrayMD
+    return result;
 }
+// Filtrar si es archivo .md - Código imperativo
+// let arrayMD = []
+// const lookForMD = (validPath, cleanArray) => {
+//     if(cleanArray){
+//         arrayMD = [];
+//     }
+//     if (fs.lstatSync(validPath).isDirectory() === true){
+//         const data = fs.readdirSync(validPath)
+//         const childrenPath = data.map(elem => path.join(validPath, elem)/* validPath+`\\${elem}` */)
+//         childrenPath.forEach(elm => lookForMD(elm, false))
+//     } else {
+//         path.extname(validPath) === '.md' && arrayMD.push(validPath);
+//     }
+//     return arrayMD
+// }
+
 // Leer archivo .md y extraer links
 const readMD = (mdPath) => new Promise((resolve, reject) =>  {
     fs.readFile(mdPath, 'utf8', (error, data) => {
@@ -51,6 +70,7 @@ const readMD = (mdPath) => new Promise((resolve, reject) =>  {
         }
     });
 })
+
 //Extraer los links en todos los .md
 const readAllMD = (filesMD) => {
     const arrLinks = filesMD.map(file => {
@@ -58,6 +78,7 @@ const readAllMD = (filesMD) => {
     })
     return Promise.all(arrLinks)
 }
+
 // validar si es un link activo
 const validLink = (Objectlink) => {
     return axios.get(Objectlink.href)
@@ -94,6 +115,7 @@ const validLink = (Objectlink) => {
             }
         })
 }
+
 //validar links en el array de objetos
 const validAllLinks = (arrayObject) => {
     const arrayObjectMap = arrayObject.map(elem => {
@@ -101,6 +123,7 @@ const validAllLinks = (arrayObject) => {
     })
     return Promise.all(arrayObjectMap)
 }
+
 //stats de los links
 const statsLinks = (allObjects) => {
     const total = allObjects.length
@@ -109,6 +132,7 @@ const statsLinks = (allObjects) => {
     const unique = set.size
     return { Total:total, Unique:unique }
 }
+
 //stats + validate de los links
 const statsValidateLinks = (allObjects) => {
     const total = allObjects.length
@@ -119,6 +143,5 @@ const statsValidateLinks = (allObjects) => {
     return { Total:total, Unique:unique, Broken:broken }
 }
 
-module.exports = { validatePath, lookForMD, readAllMD, validAllLinks, readMD, statsLinks, statsValidateLinks };
+module.exports = { validatePath, lookForMD, readAllMD, validAllLinks, readMD, statsLinks, statsValidateLinks, validLink };
 
-// COMO TESTEAR una peticion axios con jest
