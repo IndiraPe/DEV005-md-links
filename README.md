@@ -1,4 +1,4 @@
-# Indira/md-Links
+# ipp-mdlinks
 
 ## Índice
 
@@ -20,7 +20,7 @@ manejan texto plano (GitHub, foros, blogs, ...) y es muy común
 encontrar varios archivos en ese formato en cualquier tipo de repositorio
 (empezando por el tradicional `README.md`).
 
-## 2. md-Links
+## 2. ipp-mdlinks
 
 `md-Links`, es una librería que te permite extraer los _links_ de tus archivos 
 Markdown, detectar cuáles ya no son válidos y reportar algunas estadísticas.
