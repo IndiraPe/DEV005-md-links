@@ -27,7 +27,7 @@ Markdown, detectar cuáles ya no son válidos y reportar algunas estadísticas.
 
 ## 3. Instalación
 
-.
+`npm install IndiraPe/DEV005-md-links`
 
 ## 4. Opciones de uso
 
@@ -43,7 +43,7 @@ Los valores retornados son:
 * `file`: Ruta del archivo donde se encontró el link.
 
 Ejemplo: 
-![md-links](./img/validateFalse.jpg)
+![md-links-Empty](./img/validateFalse.jpg)
 
 ### Uso 2
 
@@ -57,7 +57,7 @@ Los valores retornados son:
 * `statusText`: Mensaje `fail` en caso de fallo u `ok` en caso de éxito.
 
 Ejemplo: 
-![md-links](./img/validateTrue.jpg)
+![md-links-Validate](./img/validateTrue.jpg)
 
 ### Uso 3
 
@@ -68,12 +68,14 @@ Los valores retornados son:
 * `unique`: Número de links que no se repiten.
 
 Ejemplo: 
-![md-links](./img/stats.jpg)
+![md-links-Stats](./img/stats.jpg)
 
 ### Uso 4
 
 `md-links <path-to-file-or-directory> --stats --validate`
-||
+
+también
+
 `md-links <path-to-file-or-directory> --validate --stats`
 
 Los valores retornados son:
@@ -82,7 +84,16 @@ Los valores retornados son:
 * `broken`: Número de links que no son válidos.
 
 Ejemplo: 
-![md-links](./img/validateStats.jpg)
+![md-links-ValidateStats](./img/help.jpg)
+
+### Uso 5
+
+`md-links --help`
+
+Te retornará un pequeño cuadro donde te indica que opciones están disponibles para su uso.
+
+Ejemplo: 
+![md-links-Help](./img/validateStats.jpg)
 
 ## 5. Consideraciones
 
@@ -101,19 +112,19 @@ Antes de comenzar, organicé las primeras tareas en [GitHub-projects](https://gi
 
 ![md-links](./img/mdLinks.jpg)
 
-Teniendo el diagrama de flujo plasmado, procedí a organizarlo en pequeñas tareas, dividiendo el camino entre dos Milestones: `Path`(para el trabajo de las rutas y extracción de links) y `Option` (para el trabajo de las opciones disponibles para el usuario y sus validaciones).
+Teniendo el diagrama de flujo plasmado, procedí a organizarlo en pequeñas tareas, dividiendo el camino en dos [Milestones](https://github.com/IndiraPe/DEV005-md-links/milestones): `Path`(para el trabajo de las rutas y extracción de links) y `Option` (para el trabajo de las opciones disponibles para el usuario y sus validaciones).
 
 ## 7. Checklist
 
 ### General
 
-* [ ] Puede instalarse via `npm install --global <github-user>/md-links`
+* [:ballot_box_with_check:] Puede instalarse via `npm install --global <github-user>/md-links`
 
 ### `README.md`
 
-* [ ] Un board con el backlog para la implementación de la librería.
-* [ ] Documentación técnica de la librería.
-* [ ] Guía de uso e instalación de la librería
+* [:ballot_box_with_check:] Un board con el backlog para la implementación de la librería.
+* [:ballot_box_with_check:] Documentación técnica de la librería.
+* [:ballot_box_with_check:] Guía de uso e instalación de la librería
 
 ### API `mdLinks(path, opts)`
 
@@ -125,7 +136,7 @@ Teniendo el diagrama de flujo plasmado, procedí a organizarlo en pequeñas tare
 ### CLI
 
 * [:ballot_box_with_check:] Expone ejecutable `md-links` en el path (configurado en `package.json`)
-* [ ] Se ejecuta sin errores / output esperado
+* [:ballot_box_with_check:] Se ejecuta sin errores / output esperado
 * [:ballot_box_with_check:] Implementa `--validate`
 * [:ballot_box_with_check:] Implementa `--stats`
 
