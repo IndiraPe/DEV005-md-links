@@ -84,7 +84,7 @@ Los valores retornados son:
 * `broken`: Número de links que no son válidos.
 
 Ejemplo: 
-![md-links-ValidateStats](./img/help.jpg)
+![md-links-ValidateStats](./img/validateStats.jpg)
 
 ### Uso 5
 
@@ -93,7 +93,7 @@ Ejemplo:
 Te retornará un pequeño cuadro donde te indica que opciones están disponibles para su uso.
 
 Ejemplo: 
-![md-links-Help](./img/validateStats.jpg)
+![md-links-Help](./img/help.jpg) 
 
 ## 5. Consideraciones
 
@@ -143,5 +143,5 @@ Teniendo el diagrama de flujo plasmado, procedí a organizarlo en pequeñas tare
 ### Pruebas / tests
 
 * [:ballot_box_with_check:] Pruebas unitarias cubren un mínimo del 70% de statements, functions,
-  lines, y branches.
-* [:ballot_box_with_check:] Pasa tests (y linters) (`npm test`).
+  lines, y branches.inte
+* [:ballot_box_with_check:] Pasa tests (y lrs) (`npm test`).
