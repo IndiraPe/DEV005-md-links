@@ -1,4 +1,4 @@
-# md-Links
+# Indira/md-Links
 
 ## Índice
 
@@ -94,6 +94,27 @@ Te retornará un pequeño cuadro donde te indica que opciones están disponibles
 
 Ejemplo: 
 ![md-links-Help](./img/help.jpg) 
+
+### Uso opcional
+
+También puedes importar el módulo de la siguiente manera: 
+
+```js
+const mdLinks =  require('md-links')
+
+mdLinks('<path-to-file-or-directory>', { validate: false })
+
+.then(elem => {
+    console.log(elem);
+})
+.catch(error => {
+    console.error(error);
+}); 
+```
+
+`{ validate: false }`: URL del link, texto y ruta del archivo .md
+
+`{ validate: true }`: URL del link, texto, ruta del archivo .md, status y el texto del status('ok' o 'fail')
 
 ## 5. Consideraciones
 
