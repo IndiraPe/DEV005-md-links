@@ -56,11 +56,10 @@ const readMD = (mdPath) => new Promise((resolve, reject) =>  {
                 resolve([])
             }else{
                 const mdContainSlice = mdContainMatch.map(elem => {
-                    const parenthesisLeft = elem.indexOf('(')
-                    const parenthesisRight = elem.indexOf(')')
-                    const link = elem.slice(parenthesisLeft+1, parenthesisRight)
                     const bracketLeft = elem.indexOf('[')
                     const bracketRight = elem.indexOf(']')
+                    const parenthesisRight = elem.indexOf(')', bracketRight+2)
+                    const link = elem.slice(bracketRight+2, parenthesisRight)
                     let text = elem.slice(bracketLeft+1, bracketRight)
                     text.length>50 ? text=text.slice(0, 50) : text;
                     return { href: link, text: text, file: mdPath }
@@ -111,6 +110,14 @@ const validLink = (Objectlink) => {
                     file:Objectlink.file, 
                     statusText:'fail', 
                     status: statusError
+                }
+            }else{
+                return { 
+                    href:Objectlink.href, 
+                    text:Objectlink.text, 
+                    file:Objectlink.file, 
+                    statusText:'fail', 
+                    status: 'undefined'
                 }
             }
         })
